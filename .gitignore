@@ -1,4 +1,4 @@
-credentials.ini
+brevets/credentials.ini
 __pycache__
 manual_test.py
 env
