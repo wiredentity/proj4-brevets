@@ -123,20 +123,28 @@
   // (If we want to also keep the ISO-formatted times, we'll need to
   // stash them in hidden fields.) 
   function calc_times(control) {
+  console.log("Date: " + $('#begin_date').val());
+  console.log("Time: " + $('#begin_time').val());
+  console.log("Brevet: " + $('#brevet_dist_km').val());
     var km = control.find("input[name='km']").val();
     var open_time_field = control.find("input[name='open']");
     var close_time_field = control.find("input[name='close']");
     
-    $.getJSON(TIME_CALC_URL, { km: km }, 
+$.getJSON(TIME_CALC_URL, {
+        km: km,
+        brevet_dist_km: $('#brevet_dist_km').val(),
+        begin_date: $('#begin_date').val(),
+        begin_time: $('#begin_time').val()
+      },
       // response handler
       function(data) {
          var times = data.result;
-         console.log("Got a response: " +  times);
+         console.log("Got a response: " + times);
          console.log("Response.open = " + times.open);
-         open_time_field.val( moment(times.open).format("ddd M/D H:mm"));
-         close_time_field.val( moment(times.close).format("ddd M/D H:mm"));
+         open_time_field.val(moment(times.open).format("ddd M/D H:mm"));
+         close_time_field.val(moment(times.close).format("ddd M/D H:mm"));
        } // end of handler function
-     );// End of getJSON
+     ); // End of getJSON
     }
 
   $(document).ready(function(){
@@ -165,6 +173,20 @@
              // Then calculate times for this entry
              calc_times(control_entry);
           });
+
+      $('#brevet_dist_km, #begin_date, #begin_time').change(function() {
+        console.log("Brevet distance or start time changed!");
+
+        $('.control').each(function() {
+          var control_entry = $(this);
+          var km = control_entry.find("input[name='km']").val();
+
+          if (km != "") {
+              calc_times(control_entry);
+         }
+        });
+      });
+      
 
      });   // end of what we do on document ready
 
